@@ -83,7 +83,7 @@ typedef unsigned long getauxval_func_t(unsigned long);
 static uint32_t GetElfHwcapFromGetauxval(uint32_t hwcap_type) {
   uint32_t ret = 0;
   void* libc_handle = NULL;
-  getauxval_func_t* func = NULL;
+  void* func = NULL;
 
   dlerror();  // Cleaning error state before calling dlopen.
   libc_handle = dlopen("libc.so", RTLD_NOW);
@@ -91,12 +91,12 @@ static uint32_t GetElfHwcapFromGetauxval(uint32_t hwcap_type) {
     D("Could not dlopen() C library: %s\n", dlerror());
     return 0;
   }
-  func = (getauxval_func_t*)dlsym(libc_handle, "getauxval");
+  func = dlsym(libc_handle, "getauxval");
   if (!func) {
     D("Could not find getauxval() in C library\n");
   } else {
     // Note: getauxval() returns 0 on failure. Doesn't touch errno.
-    ret = (uint32_t)(*func)(hwcap_type);
+    ret = (uint32_t)(*(getauxval_func_t**)&func)(hwcap_type);
   }
   dlclose(libc_handle);
   return ret;
