@@ -54,7 +54,7 @@ start() {
 		--data-path="$DATA_PATH" \
 		--android-image="$ANDROID_IMG" \
 		--daemon \
-		--privileged &
+		--privileged --use-rootfs-overlay&
 }
 
 stop() {
