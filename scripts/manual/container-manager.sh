@@ -30,9 +30,8 @@ start() {
 	# this path.
 	mkdir -p "$DATA_PATH/lxc"
 
-	# We start the bridge here as long as a oneshot service unit is not
-	# possible. See snapcraft.yaml for further details.
-	./anbox-bridge.sh start
+	# call restart to make sure the resident network-up can be cleaned
+	./anbox-bridge.sh restart
 
 	# Ensure FUSE support for user namespaces is enabled
 	echo Y | tee /sys/module/fuse/parameters/userns_mounts || echo "WARNING: kernel doesn't support fuse in user namespaces"
